@@ -1,0 +1,52 @@
+<html>
+    <head>
+        <title>Exercício 2</title>
+        <script src="./js/axios.js"></script>
+    </head>
+    <body>
+        <script>
+            const url = "https://dadosabertos.camara.leg.br/api/v2/partidos?ordem=ASC&ordenarPor=sigla&itens=100"
+            
+            axios(url).then(resp => {
+                var partidosSelect = document.getElementById("partidos")
+                const itens = resp.data.dados.forEach(element => {
+                    var option = document.createElement("option")
+                    option.innerText = element.nome
+                    option.setAttribute("value", element.sigla)
+                    partidosSelect.appendChild(option);
+                });
+                
+            })
+
+            function envioFormulario(event){
+                var partido = document.getElementById("partidos").value;
+
+                const url2 = "https://dadosabertos.camara.leg.br/api/v2/deputados?ordem=ASC&itens=100&siglaPartido=" + partido
+                axios(url2).then(resp => {
+                    
+                    var displayDeputados = document.getElementById("deputados")
+                    displayDeputados.innerHTML = "";
+                    const itens = resp.data.dados.forEach(element => {
+                        var divDeputado = document.createElement("div")
+                        divDeputado.innerText = element.nome
+                        displayDeputados.appendChild(divDeputado);
+                    })
+                })
+            }
+            
+        </script>
+        <form id="formulario">
+            <h2>Selecione um partido político</h2>
+            <select id="partidos" required>
+            </select> <br /> <br />
+
+            <button type="submit" value="Enviar" onclick="envioFormulario();">Enviar</button>
+        </form>
+        <div id="deputados">
+        </div>
+        <script>
+            const formulario = document.getElementById('formulario')
+            formulario.addEventListener('submit', event => event.preventDefault() );
+        </script>
+    </body>
+</html>
